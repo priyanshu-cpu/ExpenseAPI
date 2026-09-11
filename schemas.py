@@ -1,6 +1,5 @@
 from pydantic import BaseModel
 from datetime import date
-from typing import Optional
 
 class Category(BaseModel):
     name: str
@@ -11,16 +10,11 @@ class CategoryOut(BaseModel):
 
     class Config:
         from_attributes = True
-# class CategoryOut(BaseModel):
-#     id : int
 
-#     class Config:
-#         from_attributes = True
-
-class ExpenseBase(BaseModel):
-    title : str
-    price : float
-    category_id : int
+class Expense(BaseModel):
+    title: str
+    price: float
+    category_id: int
 
 
 class ExpenseOut(BaseModel):
