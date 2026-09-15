@@ -26,6 +26,6 @@ Base.metadata.create_all(engine)
 #     }
 
 
-app.include_router(expense_router)
-app.include_router(category_router)
+app.include_router(expense_router, tags=["Expenses"])
+app.include_router(category_router, tags=["Categories"])
 app.include_router(user_router)

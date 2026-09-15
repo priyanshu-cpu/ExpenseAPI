@@ -2,18 +2,23 @@ from fastapi import APIRouter,HTTPException,Depends
 from sqlalchemy.orm import Session
 from utils.database import get_db
 from models.expenses import Category, Expenses
-import schemas
+from models.users import Users
+from schemas.expenses import ExpenseOutSchema, ExpenseSchema
 
 
 router = APIRouter(prefix="/expenses")
 
 
-
-@router.post("/expenses", response_model=schemas.ExpenseOut)
-def create_expense(expense: schemas.Expense, db: Session = Depends(get_db)):
+@router.post("/expenses", response_model=ExpenseOutSchema)
+def create_expense(expense: ExpenseSchema, db: Session = Depends(get_db)):
     category = db.query(Category).filter(Category.id == expense.category_id).first()
     if category is None:
         raise HTTPException(status_code=404, detail="Category not found")
+    
+    user = db.query(Users).filter(Users.id == expense.user_id).first()
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    
     db_expense = Expenses(**expense.model_dump())
     db.add(db_expense)
     db.commit()
@@ -21,12 +26,12 @@ def create_expense(expense: schemas.Expense, db: Session = Depends(get_db)):
     return db_expense
 
 
-@router.get("/expenses", response_model=list[schemas.ExpenseOut])
+@router.get("/expenses", response_model=list[ExpenseOutSchema])
 def list_expenses(db: Session = Depends(get_db)):
     return db.query(Expenses).all()
 
 
-@router.get("/expenses/{expense_id}", response_model=schemas.ExpenseOut)
+@router.get("/expenses/{expense_id}", response_model=ExpenseOutSchema)
 def read_expense(expense_id: int, db: Session = Depends(get_db)):
     expense = db.query(Expenses).filter(Expenses.id == expense_id).first()
     if expense is None:
@@ -34,8 +39,8 @@ def read_expense(expense_id: int, db: Session = Depends(get_db)):
     return expense
 
 
-@router.put("/expenses/{expense_id}", response_model=schemas.ExpenseOut)
-def update_expense(expense_id: int, expense: schemas.Expense, db: Session = Depends(get_db)):
+@router.put("/expenses/{expense_id}", response_model=ExpenseOutSchema)
+def update_expense(expense_id: int, expense: ExpenseSchema, db: Session = Depends(get_db)):
     db_expense = db.query(Expenses).filter(Expenses.id == expense_id).first()
     if db_expense is None:
         raise HTTPException(status_code=404, detail="Expense not found")

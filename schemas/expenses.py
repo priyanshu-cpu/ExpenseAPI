@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from datetime import date
-from users import UserOutSchema
+from schemas.users import UserOutSchema
 
 class CategorySChema(BaseModel):
     name: str
@@ -16,6 +16,7 @@ class ExpenseSchema(BaseModel):
     title: str
     price: float
     category_id: int
+    user_id: int
 
 
 class ExpenseOutSchema(BaseModel):
