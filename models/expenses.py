@@ -20,5 +20,7 @@ class Expenses(Base):
     price = Column(Float)
     date = Column(Date, default=date.today)
 
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     category_id = Column(Integer, ForeignKey("categories.id"), nullable=False)
     category = relationship("Category", back_populates="expenses")
+    user = relationship("Users", back_populates="expenses")

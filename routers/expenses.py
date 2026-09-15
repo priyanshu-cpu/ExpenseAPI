@@ -1,6 +1,6 @@
 from fastapi import APIRouter,HTTPException,Depends
 from sqlalchemy.orm import Session
-from utils.database import engine, Base, get_db
+from utils.database import get_db
 from models.expenses import Category, Expenses
 import schemas
 
