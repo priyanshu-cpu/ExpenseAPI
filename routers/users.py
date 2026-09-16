@@ -7,4 +7,5 @@ from schemas.users import UserSchema, UserOutSchema
 router = APIRouter(prefix ="/users")
 
 router.post("/create", response_model=UserSchema)
-def create_user(body: UserSchema UserSchema,db: Session = Depends(get_db)):
+def create_user(body: UserSchema, db: Session = Depends(get_db)):
+    pass
