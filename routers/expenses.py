@@ -9,7 +9,7 @@ from schemas.expenses import ExpenseOutSchema, ExpenseSchema
 router = APIRouter(prefix="/expenses")
 
 
-@router.post("/expenses", response_model=ExpenseOutSchema)
+@router.post("/create", response_model=ExpenseOutSchema)
 def create_expense(expense: ExpenseSchema, db: Session = Depends(get_db)):
     category = db.query(Category).filter(Category.id == expense.category_id).first()
     if category is None:
@@ -26,12 +26,12 @@ def create_expense(expense: ExpenseSchema, db: Session = Depends(get_db)):
     return db_expense
 
 
-@router.get("/expenses", response_model=list[ExpenseOutSchema])
+@router.get("/get", response_model=list[ExpenseOutSchema])
 def list_expenses(db: Session = Depends(get_db)):
     return db.query(Expenses).all()
 
 
-@router.get("/expenses/{expense_id}", response_model=ExpenseOutSchema)
+@router.get("/get/{expense_id}", response_model=ExpenseOutSchema)
 def read_expense(expense_id: int, db: Session = Depends(get_db)):
     expense = db.query(Expenses).filter(Expenses.id == expense_id).first()
     if expense is None:
@@ -39,7 +39,7 @@ def read_expense(expense_id: int, db: Session = Depends(get_db)):
     return expense
 
 
-@router.put("/expenses/{expense_id}", response_model=ExpenseOutSchema)
+@router.put("/update/{expense_id}", response_model=ExpenseOutSchema)
 def update_expense(expense_id: int, expense: ExpenseSchema, db: Session = Depends(get_db)):
     db_expense = db.query(Expenses).filter(Expenses.id == expense_id).first()
     if db_expense is None:
@@ -57,7 +57,7 @@ def update_expense(expense_id: int, expense: ExpenseSchema, db: Session = Depend
     return db_expense
 
 
-@router.delete("/expenses/{expense_id}")
+@router.delete("/delete/{expense_id}")
 def delete_expense(expense_id: int, db: Session = Depends(get_db)):
     expense = db.query(Expenses).filter(Expenses.id == expense_id).first()
     if expense is None:

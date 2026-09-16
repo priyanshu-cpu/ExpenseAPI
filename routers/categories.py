@@ -6,7 +6,7 @@ from schemas.expenses import CategoryOutSchema, CategorySChema
 
 router = APIRouter(prefix="/categories")
 
-@router.post("/categories", response_model=CategoryOutSchema)
+@router.post("/create", response_model=CategoryOutSchema)
 def create_category(category: CategorySChema, db : Session = Depends(get_db)):
     category_dict = category.model_dump()
     db_category = Category(**category_dict)
@@ -16,12 +16,12 @@ def create_category(category: CategorySChema, db : Session = Depends(get_db)):
     return db_category
 
 
-@router.get("/categories", response_model=list[CategoryOutSchema])
+@router.get("/get", response_model=list[CategoryOutSchema])
 def list_categories(db: Session = Depends(get_db)):
     return db.query(Category).all()
 
 
-@router.get("/categories/{category_id}", response_model=CategoryOutSchema)
+@router.get("/get/{category_id}", response_model=CategoryOutSchema)
 def read_category(category_id: int, db: Session = Depends(get_db)):
     category = db.query(Category).filter(Category.id == category_id).first()
     if category is None:
@@ -29,7 +29,7 @@ def read_category(category_id: int, db: Session = Depends(get_db)):
     return category
 
 
-@router.put("/categories/{category_id}", response_model=CategoryOutSchema)
+@router.put("/update/{category_id}", response_model=CategoryOutSchema)
 def update_category(category_id: int, category: CategorySChema, db: Session = Depends(get_db)):
     db_category = db.query(Category).filter(Category.id == category_id).first()
     if db_category is None:
@@ -40,7 +40,7 @@ def update_category(category_id: int, category: CategorySChema, db: Session = De
     return db_category
 
 
-@router.delete("/categories/{category_id}")
+@router.delete("/delete/{category_id}")
 def delete_category(category_id: int, db: Session = Depends(get_db)):
     category = db.query(Category).filter(Category.id == category_id).first()
     if category is None:
