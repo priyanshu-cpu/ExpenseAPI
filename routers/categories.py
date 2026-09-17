@@ -1,19 +1,19 @@
 from fastapi import APIRouter,HTTPException,Depends
 from sqlalchemy.orm import Session
 from utils.database import get_db
-from models.expenses import Category, Expenses
-from schemas.expenses import CategoryOutSchema, CategorySChema
+from models.expenses import Category
+from schemas.expenses import CategoryOutSchema
 
 router = APIRouter(prefix="/categories")
 
-@router.post("/create", response_model=CategoryOutSchema)
-def create_category(category: CategorySChema, db : Session = Depends(get_db)):
-    category_dict = category.model_dump()
-    db_category = Category(**category_dict)
-    db.add(db_category)
-    db.commit()
-    db.refresh(db_category)
-    return db_category
+# @router.post("/create", response_model=CategoryOutSchema)
+# def create_category(category: CategorySChema, db : Session = Depends(get_db)):
+#     category_dict = category.model_dump()
+#     db_category = Category(**category_dict)
+#     db.add(db_category)
+#     db.commit()
+#     db.refresh(db_category)
+#     return db_category
 
 
 @router.get("/get", response_model=list[CategoryOutSchema])
