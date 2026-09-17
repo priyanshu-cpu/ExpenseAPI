@@ -29,23 +29,23 @@ def read_category(category_id: int, db: Session = Depends(get_db)):
     return category
 
 
-@router.put("/update/{category_id}", response_model=CategoryOutSchema)
-def update_category(category_id: int, category: CategorySChema, db: Session = Depends(get_db)):
-    db_category = db.query(Category).filter(Category.id == category_id).first()
-    if db_category is None:
-        raise HTTPException(status_code=404, detail="Category not found")
-    db_category.name = category.name
-    db.commit()
-    db.refresh(db_category)
-    return db_category
+# @router.put("/update/{category_id}", response_model=CategoryOutSchema)
+# def update_category(category_id: int, category: CategorySChema, db: Session = Depends(get_db)):
+#     db_category = db.query(Category).filter(Category.id == category_id).first()
+#     if db_category is None:
+#         raise HTTPException(status_code=404, detail="Category not found")
+#     db_category.name = category.name
+#     db.commit()
+#     db.refresh(db_category)
+#     return db_category
 
 
-@router.delete("/delete/{category_id}")
-def delete_category(category_id: int, db: Session = Depends(get_db)):
-    category = db.query(Category).filter(Category.id == category_id).first()
-    if category is None:
-        raise HTTPException(status_code=404, detail="Category not found")
-    db.delete(category)
-    db.commit()
-    return {"message": "Category deleted"}
+# @router.delete("/delete/{category_id}")
+# def delete_category(category_id: int, db: Session = Depends(get_db)):
+#     category = db.query(Category).filter(Category.id == category_id).first()
+#     if category is None:
+#         raise HTTPException(status_code=404, detail="Category not found")
+#     db.delete(category)
+#     db.commit()
+#     return {"message": "Category deleted"}
 
