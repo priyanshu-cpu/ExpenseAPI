@@ -18,7 +18,7 @@ bearer_scheme = HTTPBearer(bearerFormat="JWT")
 credential_exception = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
     detail="Invalid or expired token!",
-    headers={"WWW-Authentictae" : "Bearer"},
+    headers={"WWW-Authenticate" : "Bearer"},
 )
 
 hash_password = PasswordHash.recommended()

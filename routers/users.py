@@ -37,13 +37,16 @@ def create_user(body: UserSchema, db: Session = Depends(get_db)):
 def login_user(body: UserLoginSchema, db: Session = Depends(get_db)):
     user = db.query(Users).filter(Users.username == body.username).first()
     if user is None:
-        raise HTTPException(status_code=404, detail="Wrong username")
+        raise HTTPException(status_code=404, detail="Invalid credentials")
 
     if not verify_password(body.password, user.hashed_password):
-        raise HTTPException(status_code=404,detail="Wrong password")
+        raise HTTPException(status_code=404,detail="Invalid credentials")
 
     token = create_token({
         "sub": str(user.id)
     })
 
-    return token
+    return {
+        "access_token": token,
+        "token_type": "bearer",
+    }

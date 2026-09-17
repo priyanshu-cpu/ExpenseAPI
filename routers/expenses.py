@@ -25,12 +25,12 @@ def create_expense(expense: ExpenseSchema, db: Session = Depends(get_db),current
 
 @router.get("/get", response_model=list[ExpenseOutSchema])
 def list_expenses(db: Session = Depends(get_db), current_user: Users = Depends(get_current_user)):
-    return db.query(Expenses).all()
+    return db.query(Expenses).filter(Expenses.user_id == current_user.id).all()
 
 
 @router.get("/get/{expense_id}", response_model=ExpenseOutSchema)
 def read_expense(expense_id: int, db: Session = Depends(get_db), current_user: Users = Depends(get_current_user)):
-    expense = db.query(Expenses).filter(Expenses.id == expense_id).first()
+    expense = db.query(Expenses).filter(Expenses.id == expense_id, Expenses.user_id == current_user.id).first()
     if expense is None:
         raise HTTPException(status_code=404, detail="Expense not found")
     return expense
