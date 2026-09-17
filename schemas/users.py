@@ -17,3 +17,7 @@ class UserOutSchema(BaseModel):
 class UserCreateResponse(BaseModel):
     message: str
     data: UserOutSchema
+
+class UserLoginSchema(BaseModel):
+    username:str
+    password: str
