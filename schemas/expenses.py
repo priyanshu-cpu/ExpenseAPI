@@ -16,7 +16,6 @@ class ExpenseSchema(BaseModel):
     title: str
     price: float
     category_id: int
-    user_id: int
 
 
 class ExpenseOutSchema(BaseModel):
