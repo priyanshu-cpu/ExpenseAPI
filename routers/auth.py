@@ -4,7 +4,15 @@ from datetime import datetime, timedelta, timezone
 from utils.settings import settings
 from utils.database import get_db
 from fastapi import HTTPException, status
+from pwdlib import PasswordHash
 
+hash_password = PasswordHash.recommended()
+
+def get_password_hash(password):
+    return hash_password.hash(password)
+
+def verify_password(password, hashed_password):
+    return hash_password.verify(password,hashed_password)
 
 def create_token(data: dict):
     to_encode = data.copy()

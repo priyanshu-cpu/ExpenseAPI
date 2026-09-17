@@ -13,3 +13,7 @@ class UserOutSchema(BaseModel):
 
     class Config:
         from_attributes = True
+
+class UserCreateResponse(BaseModel):
+    message: str
+    data: UserOutSchema
