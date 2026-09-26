@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from pwdlib import PasswordHash
 from app.settings import settings
+from app.models.users import Users
 
 
 
@@ -16,15 +17,19 @@ credentials_exception = HTTPException(
 )
 
 
+
 hash_password = PasswordHash.recommended()
+
 
 
 def create_password_hash(password):
     return hash_password.hash(password)
 
 
+
 def verify_password(password, hash_password):
     return hash_password.verify(password, hash_password)
+
 
 
 def create_token(data:dict):
@@ -38,6 +43,7 @@ def create_token(data:dict):
     return token
 
 
+
 def verify_token(token: OAuth2PasswordBearer):
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
@@ -46,3 +52,17 @@ def verify_token(token: OAuth2PasswordBearer):
         return payload
     except JWTError:
         raise credentials_exception
+
+
+
+def get_current_user(payload: dict = Depends(verify_token), db:Session = Depends(get_db)):
+    try:
+        user_id = int(payload["sub"])
+    except(ValueError, KeyError, TypeError):
+        raise credentials_exception
+    user = db.get(Users, user_id)
+
+    if user is None:
+        raise credentials_exception
+
+    return user
