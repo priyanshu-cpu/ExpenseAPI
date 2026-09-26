@@ -18,7 +18,7 @@ class Expenses(Base):
 
     id  = Column(Integer, primary_key=True, index=True)
     title  = Column(String)
-    amount  = Column(Float)
+    amount  = Column(Integer)
     date  = Column(Date, default=date.today)
 
 
