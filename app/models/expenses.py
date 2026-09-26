@@ -27,4 +27,4 @@ class Expenses(Base):
 
 
     category = relationship("Category", back_populates="expenses")
-    user = relationship("User", back_populates="expenses")
+    user = relationship("Users", back_populates="expenses")
