@@ -10,6 +10,9 @@ class Category(Base):
     id  = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True, unique=True, nullable= False)
 
+    user_id = Column(Integer, ForeignKey("users.id"))
+
+    user = relationship("Users", back_populates="category")
     expenses = relationship("Expenses", back_populates="category")
 
 

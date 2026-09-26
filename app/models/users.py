@@ -11,4 +11,5 @@ class Users(Base):
     email = Column(String,unique=True, nullable= True)
     hashed_password = Column(String)
 
+    category = relationship("Category", back_populates="user")
     expenses = relationship("Expenses", back_populates="user")
