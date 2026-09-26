@@ -25,14 +25,13 @@ credentials_exception = HTTPException(
 hash_password = PasswordHash.recommended()
 
 
-
 def create_password_hash(password):
     return hash_password.hash(password)
 
 
 
-def verify_password(password, hash_password):
-    return hash_password.verify(password, hash_password)
+def verify_password(password, password_hash):
+    return hash_password.verify(password, password_hash)
 
 
 
