@@ -10,6 +10,10 @@ from app.models.users import Users
 
 
 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+
+
+
 credentials_exception = HTTPException(
     status_code=401,
     detail="Invaid or expired token!",
@@ -44,7 +48,7 @@ def create_token(data:dict):
 
 
 
-def verify_token(token: OAuth2PasswordBearer):
+def verify_token(token: str = Depends(oauth2_scheme)):
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         if not payload.get("sub"):
@@ -66,3 +70,4 @@ def get_current_user(payload: dict = Depends(verify_token), db:Session = Depends
         raise credentials_exception
 
     return user
+
