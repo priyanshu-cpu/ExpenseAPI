@@ -9,3 +9,22 @@ from app.utils.security import get_current_user, verify_token
 
 
 router = APIRouter(prefix="/expense")
+
+
+
+@router.get("/get", response_model=list[ExpenseOut])
+def list_expense(db:Session = Depends(get_db), user:Users = Depends(get_current_user)):
+    expense = db.query(Expenses).filter(Expenses.user_id == user.id).all()
+    if not expense:
+        raise HTTPException(status_code=404, detail="No expense found")
+
+    return expense
+
+
+@router.get("/get/{expense_id}", response_model=ExpenseOut)
+def get_expense(expense_id: int, db:Session = Depends(get_db), user: Users = Depends(get_current_user)):
+    expense = db.query(Expenses).filter(Expenses.id == expense_id, Expenses.user_id == user.id).first()
+    if not expense:
+        raise HTTPException(status_code=404, detail="Not found!")
+
+    return expense
