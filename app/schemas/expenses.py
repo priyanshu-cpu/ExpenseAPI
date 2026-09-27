@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Field, ConfigDict
+from datetime import date
 
 
 class CategoryBase(BaseModel):
@@ -20,12 +21,14 @@ class CategoryCreateResponse(BaseModel):
 class ExpenseBase(BaseModel):
     title: str
     amount: int
-
+    category_id: int
 
 class ExpenseOut(BaseModel):
     id: int
     title: str
     amount: int
+    date: date
+    category: CategoryOut
 
     model_config = ConfigDict(from_attributes=True)
 
