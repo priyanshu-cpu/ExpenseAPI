@@ -60,3 +60,15 @@ def update_category(category_id: int, form_data: CategoryBase, db: Session = Dep
         "data" : category
     }
 
+
+
+@router.delete("/delete/{category_id}")
+def delete_category(category_id : int, db: Session = Depends(get_db), user:Users = Depends(get_current_user)):
+    category = db.query(Category).filter(Category.id == category_id, Category.user_id == user.id).first()
+    if category is None:
+        raise HTTPException(status_code=404, detail="Not found!")
+    db.delete(category)
+    db.commit()
+    return{
+        "message" : "category deleted"
+    }
