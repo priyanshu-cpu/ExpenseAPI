@@ -38,13 +38,31 @@ def create_expense(form_data: ExpenseBase, db: Session = Depends(get_db), user: 
     if category is None:
         raise HTTPException(status_code=404, detail="category not found!")
 
-    db_expense = Expenses(**form_data.model_dump(), user_id = user.id)
+    new_expense = Expenses(**form_data.model_dump(), user_id = user.id)
 
-    db.add(db_expense)
+    db.add(new_expense)
     db.commit()
-    db.refresh(db_expense)
+    db.refresh(new_expense)
 
     return{
         "message" : "expense created",
-        "data" : db_expense
+        "data" : new_expense
+    }
+
+
+
+@router.put("/update/{expense_id}", response_model=ExpenseCreateResponse)
+def update_expense(expense_id: int, form_data: ExpenseBase, db: Session =Depends(get_db), user: Users = Depends(get_current_user)):
+    expense = db.query(Expenses).filter(Expenses.id == expense_id, Expenses.user_id == user.id).first()
+    if expense is None:
+        raise HTTPException(status_code=404, detail= "Not found")
+    expense.title  = form_data.title
+    expense.amount = form_data.amount
+    expense.category_id = form_data.category_id
+
+    db.commit()
+    db.refresh(expense)
+    return{
+        "message" : "expense updated",
+        "data" : expense
     }

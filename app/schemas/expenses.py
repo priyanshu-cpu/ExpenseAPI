@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, ConfigDict
-from datetime import date
+from datetime import date as Date
 
 
 class CategoryBase(BaseModel):
@@ -27,7 +27,7 @@ class ExpenseOut(BaseModel):
     id: int
     title: str
     amount: int
-    date: date
+    date: Date | None  = None
     category: CategoryOut
 
     model_config = ConfigDict(from_attributes=True)
