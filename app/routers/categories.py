@@ -10,6 +10,7 @@ from app.utils.security import get_current_user, verify_token
 router = APIRouter(prefix="/category")
 
 
+
 @router.get("/get", response_model=list[CategoryOut])
 def list_categories(db:Session = Depends(get_db), user: Users = Depends(get_current_user)):
     categories =  db.query(Category).filter(Category.user_id == user.id).all()
@@ -17,12 +18,15 @@ def list_categories(db:Session = Depends(get_db), user: Users = Depends(get_curr
         raise HTTPException(status_code=404, detail="no category found!")
     return categories
 
+
+
 @router.get("/get/{category_id}", response_model=CategoryOut)
 def get_category(category_id: int, db:Session = Depends(get_db), user:Users = Depends(get_current_user)):
     category = db.query(Category).filter(Category.id == category_id, Category.user_id == user.id).first()
     if not category:
         raise HTTPException(status_code=404, detail="category not found")
     return category
+
 
 
 @router.post("/create", response_model=CategoryCreateResponse)
@@ -36,6 +40,23 @@ def create_category(form_data : CategoryBase, db:Session = Depends(get_db),user:
     db.refresh(new_category)
 
     return{
-        "message" : "category created successfully!",
+        "message" : "category created",
         "data" : new_category
     }
+
+
+
+@router.put("/update/{category_id}", response_model=CategoryCreateResponse)
+def update_category(category_id: int, form_data: CategoryBase, db: Session = Depends(get_db), user:Users = Depends(get_current_user)):
+    category = db.query(Category).filter(Category.id == category_id, Category.user_id == user.id).first()
+    if category is None:
+        raise HTTPException(status_code=404, detail="category not found!")
+
+    category.name = form_data.name
+    db.commit()
+    db.refresh(category)
+    return {
+        "message" : "category updated",
+        "data" : category
+    }
+
