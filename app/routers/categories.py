@@ -4,6 +4,38 @@ from app.schemas.expenses import CategoryBase, CategoryOut, CategoryCreateRespon
 from fastapi import Depends, HTTPException, APIRouter
 from sqlalchemy.orm import Session
 from app.database import get_db
+from app.utils.security import get_current_user, verify_token
 
 
 router = APIRouter(prefix="/category")
+
+
+@router.get("/get", response_model=list[CategoryOut])
+def list_categories(db:Session = Depends(get_db), user: Users = Depends(get_current_user)):
+    categories =  db.query(Category).filter(Category.user_id == user.id).all()
+    if not categories:
+        raise HTTPException(status_code=404, detail="no category found!")
+    return categories
+
+@router.get("/get/{category_id}", response_model=CategoryOut)
+def get_category(category_id: int, db:Session = Depends(get_db), user:Users = Depends(get_current_user)):
+    category = db.query(Category).filter(Category.id == category_id, Category.user_id == user.id).first()
+    if not category:
+        raise HTTPException(status_code=404, detail="category not found")
+    return category
+
+
+@router.post("/create", response_model=CategoryCreateResponse)
+def create_category(form_data : CategoryBase, db:Session = Depends(get_db),user:Users = Depends(get_current_user)):
+    category = db.query(Category).filter(Category.name == form_data.name, Category.user_id == user.id).first()
+    if category:
+        raise HTTPException(status_code=400, detail="category already exists")
+    new_category = Category(name = form_data.name, user_id = user.id)
+    db.add(new_category)
+    db.commit()
+    db.refresh(new_category)
+
+    return{
+        "message" : "category created successfully!",
+        "data" : new_category
+    }

@@ -19,10 +19,10 @@ def create_user(form_data: UserSchema, db:Session = Depends(get_db)):
     user = db.query(Users).filter(Users.username == form_data.username).first()
     if user is not None:
         raise HTTPException(status_code=400, detail="User already exists!")
-
-    email = db.query(Users).filter(Users.email == form_data.email).first()
-    if email is not None:
-        raise HTTPException(status_code=400, detail="Email already exists!")
+    if form_data.email is not None:
+        email = db.query(Users).filter(Users.email == form_data.email).first()
+        if email is not None:
+            raise HTTPException(status_code=400, detail="Email already exists!")
 
     password_hash = create_password_hash(form_data.password)
 

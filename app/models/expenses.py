@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, Date, ForeignKey
+from sqlalchemy import Column, Integer, String, Float, Date, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import relationship
 from app.database import Base
 from datetime import date
@@ -8,7 +8,9 @@ class Category(Base):
     __tablename__ = "categories"
 
     id  = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True, unique=True, nullable= False)
+    name = Column(String, index=True, nullable= False)
+
+    __table_args__ = (UniqueConstraint("name", "user_id", name="uq_category_name_user"),)
 
     user_id = Column(Integer, ForeignKey("users.id"))
 
