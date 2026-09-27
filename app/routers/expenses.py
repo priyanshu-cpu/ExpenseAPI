@@ -66,3 +66,17 @@ def update_expense(expense_id: int, form_data: ExpenseBase, db: Session =Depends
         "message" : "expense updated",
         "data" : expense
     }
+
+
+
+@router.delete("/delete/{expense_id}")
+def delete_expense(expense_id: int, db: Session = Depends(get_db), user: Users =Depends(get_current_user)):
+    expense = db.query(Expenses).filter(Expenses.id == expense_id, Expenses.user_id == user.id).first()
+    if expense is None:
+        raise HTTPException(status_code=404, detail="not found!")
+
+    db.delete(expense)
+    db.commit()
+    return{
+        "message" : "expense deleted"
+    }
