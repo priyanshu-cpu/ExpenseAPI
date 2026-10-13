@@ -1,8 +1,16 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from app.routers.users import router as user_router
 from app.routers.categories import router as category_router
 from app.routers.expenses import router as expense_router
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[frontendforexpenseapi.netlify.app],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 app = FastAPI()
