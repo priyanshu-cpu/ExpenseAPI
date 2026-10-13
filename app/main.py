@@ -4,6 +4,10 @@ from app.routers.users import router as user_router
 from app.routers.categories import router as category_router
 from app.routers.expenses import router as expense_router
 
+
+app = FastAPI()
+
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[frontendforexpenseapi.netlify.app],
@@ -12,8 +16,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-app = FastAPI()
 
 
 app.include_router(user_router, tags=["auth"])
