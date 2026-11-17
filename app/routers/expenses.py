@@ -55,7 +55,12 @@ def create_expense(form_data: ExpenseBase, db: Session = Depends(get_db), user: 
 def update_expense(expense_id: int, form_data: ExpenseBase, db: Session =Depends(get_db), user: Users = Depends(get_current_user)):
     expense = db.query(Expenses).filter(Expenses.id == expense_id, Expenses.user_id == user.id).first()
     if expense is None:
-        raise HTTPException(status_code=404, detail= "Not found")
+        raise HTTPException(status_code=404, detail= "Expense Not found")
+    category = db.query(Category).filter(Category.user_id == user.id).first()
+
+    if category is None:
+        raise HTTPException(status_code=401, detail="Category not found")
+    
     expense.title  = form_data.title
     expense.amount = form_data.amount
     expense.category_id = form_data.category_id
